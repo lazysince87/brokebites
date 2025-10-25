@@ -39,10 +39,6 @@ public class IngredientService {
         return ingredientRepository.findByCategory(category);
     }
     
-    public List<Ingredient> getDetectedIngredients() {
-        return ingredientRepository.findDetectedIngredients();
-    }
-    
     public Ingredient createIngredient(Ingredient ingredient) {
         ingredient.setCreatedAt(LocalDateTime.now());
         ingredient.setUpdatedAt(LocalDateTime.now());

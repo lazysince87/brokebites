@@ -53,13 +53,7 @@ public class IngredientController {
         List<Ingredient> ingredients = ingredientService.getIngredientsByCategory(category);
         return ResponseEntity.ok(ingredients);
     }
-    
-    @GetMapping("/detected")
-    public ResponseEntity<List<Ingredient>> getDetectedIngredients() {
-        List<Ingredient> ingredients = ingredientService.getDetectedIngredients();
-        return ResponseEntity.ok(ingredients);
-    }
-    
+
     @PostMapping
     public ResponseEntity<Ingredient> createIngredient(@RequestBody Ingredient ingredient) {
         Ingredient createdIngredient = ingredientService.createIngredient(ingredient);
