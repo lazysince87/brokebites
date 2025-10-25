@@ -5,7 +5,7 @@ import { AUTH0_DOMAIN, AUTH0_CLIENT_ID } from '@env';
 // Create the context
 const AuthContext = createContext();
 
-// Configure Auth0 endpoints
+// Configure Auth0 endpoint
 const discovery = {
   authorizationEndpoint: `https://${AUTH0_DOMAIN}/authorize`,
   tokenEndpoint: `https://${AUTH0_DOMAIN}/oauth/token`,

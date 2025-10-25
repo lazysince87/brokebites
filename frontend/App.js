@@ -7,6 +7,7 @@ import Profile from './components/Profile';
 
 export default function App() {
   return (
+    // Wrap the app with AuthProvider to manage authentication state
     <AuthProvider>
       <View style={styles.container}>
         <Text style={styles.title}>Auth0 Login</Text>
