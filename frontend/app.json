@@ -3,6 +3,7 @@
     "name": "frontend",
     "slug": "frontend",
     "version": "1.0.0",
+    "owner": "fho06",
     "scheme": "brokebites",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,6 +14,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    
     "ios": {
       "supportsTablet": true
     },

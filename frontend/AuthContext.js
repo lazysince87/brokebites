@@ -2,7 +2,15 @@ import React, { createContext, useState, useContext } from 'react';
 import * as AuthSession from 'expo-auth-session';
 import { AUTH0_DOMAIN, AUTH0_CLIENT_ID } from '@env';
 
+// Create the context
 const AuthContext = createContext();
+
+// Configure Auth0 endpoint
+const discovery = {
+  authorizationEndpoint: `https://${AUTH0_DOMAIN}/authorize`,
+  tokenEndpoint: `https://${AUTH0_DOMAIN}/oauth/token`,
+  revocationEndpoint: `https://${AUTH0_DOMAIN}/v2/logout`,
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -10,37 +18,44 @@ export const AuthProvider = ({ children }) => {
 
   const login = async () => {
     try {
-      // Use Expo proxy
-      const redirectUri = AuthSession.makeRedirectUri({ useProxy: true });
+      // Create redirect URI using Expo's proxy for development
+      const redirectUri = AuthSession.makeRedirectUri({
+        useProxy: true,
+      });
 
-      const authUrl =
-        `https://${AUTH0_DOMAIN}/authorize` +
-        `?client_id=${AUTH0_CLIENT_ID}` +
-        `&response_type=token` +
-        `&scope=openid profile email` +
-        `&redirect_uri=${encodeURIComponent(redirectUri)}`;
+      console.log('Redirect URI:', redirectUri);
 
-      const result = await AuthSession.openAuthSessionAsync(authUrl, redirectUri);
+      // Configure the Auth request
+      const authRequest = new AuthSession.AuthRequest({
+        clientId: AUTH0_CLIENT_ID,
+        redirectUri,
+        scopes: ['openid', 'profile', 'email'],
+        responseType: 'token',
+      });
 
-      if (result.type === 'success') {
-        const tokenMatch = result.url.match(/access_token=([^&]+)/);
-        if (!tokenMatch) throw new Error('No access token returned');
-        const token = tokenMatch[1];
+      // Prompt user for login
+      const result = await authRequest.promptAsync(discovery, { useProxy: true });
 
+      if (result.type === 'success' && result.params.access_token) {
+        const token = result.params.access_token;
         setAccessToken(token);
 
+        // Fetch user info
         const userInfoResponse = await fetch(`https://${AUTH0_DOMAIN}/userinfo`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+
         const userInfo = await userInfoResponse.json();
         setUser(userInfo);
+      } else {
+        console.log('Login cancelled or failed:', result);
       }
     } catch (error) {
       console.log('Login failed', error);
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     setUser(null);
     setAccessToken(null);
   };
