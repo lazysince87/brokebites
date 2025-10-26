@@ -14,7 +14,6 @@ const LandingScreen = ({navigation}) => {
 
   return (
     <View>
-      <Text>Hello</Text>
       <TouchableOpacity onPress={() => navigation.navigate("Recipes")}>Recipes</TouchableOpacity>
       <TouchableOpacity>Ingredients</TouchableOpacity>
     </View>
