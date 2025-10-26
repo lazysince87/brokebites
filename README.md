@@ -1,7 +1,8 @@
 # 🥗 BrokeBites - Smart Meal Planning App
 
 <div align="center">
-  <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter" />
+  <img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Native" />
+  <img src="https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white" alt="Expo" />
   <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white" alt="Spring Boot" />
   <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
   <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white" alt="Java" />
@@ -11,10 +12,10 @@
 
 | Name | Role | Responsibilities |
 |------|------|------------------|
-| **Kenzo** | Database Engineer | MongoDB schema design, database management, and API integration with backend |
-| **Thuy** | AI Engineer | Image recognition model for ingredient detection and integration with Flutter frontend |
-| **Diego** | Full Stack Developer | Backend API development with Spring Boot and connection to frontend |
-| **Fabian** | Frontend Developer | Flutter UI development, user experience design, and API data display |
+| **Thuy** | Full Stack Developer & AI Engineer | Full stack development, MongoDB schema design, database management, and image recognition model for ingredient detection |
+| **Kenzo** | Backend Developer | Spoonacular API integration and backend API development |
+| **Diego** | Frontend Developer | React Native UI development and user experience design |
+| **Fabian** | Frontend Developer | React Native UI development and API data display |
 
 ## 💡 Challenge Statement
 
@@ -22,14 +23,14 @@ Students often struggle with meal variety and nutrition, leading to food waste a
 
 ## 🍴 Our Solution
 
-BrokeBites is a smart meal-planning web and mobile app that uses AI ingredient recognition to generate recipes based on what users already have.
+BrokeBites is a smart meal-planning mobile app that uses AI ingredient recognition to generate recipes based on what users already have.
 
 ### Key Features:
 - 📸 **AI Ingredient Detection**: Take photos or upload images to automatically detect ingredients
 - 🧠 **Smart Recipe Generation**: Get personalized recipe suggestions based on available ingredients
 - ⚙️ **Advanced Filtering**: Filter recipes by calories, protein, diet type, and cooking time
 - 💾 **Recipe Management**: Save favorite recipes and track meal history
-- 📱 **Cross-Platform**: Works on Android, iOS, and web browsers
+- 📱 **Cross-Platform**: Works on Android and iOS devices
 
 ## 🚀 Project Vision
 
@@ -43,18 +44,18 @@ BrokeBites is a smart meal-planning web and mobile app that uses AI ingredient r
 
 ## 🧩 Technology Stack & Architecture
 
-### 🖥️ Frontend (Web Application)
-- **Framework**: Next.js 15 with TypeScript
-- **Purpose**: Responsive web UI for recipe discovery, ingredient input, and camera AI integration
+### 📱 Frontend (Mobile Application)
+- **Framework**: React Native with Expo
+- **Purpose**: Cross-platform mobile UI for recipe discovery, ingredient input, and camera AI integration
 - **Key Technologies**:
-  - `React 18` for component-based UI
-  - `TypeScript` for type safety
-  - `Tailwind CSS` for styling
-  - `Axios` for REST API requests
-  - `React Hook Form` for form management
-  - `Zustand` for state management
-  - `Lucide React` for icons
-- **Platform**: Modern web browsers with responsive design
+  - `React Native` for native mobile components
+  - `Expo` for development and deployment
+  - `JavaScript/TypeScript` for type safety
+  - `React Navigation` for app navigation
+  - `Axios` or `Fetch API` for REST API requests
+  - `React Native Camera` for image capture
+  - `Auth0` for authentication
+- **Platform**: Android and iOS mobile devices
 
 ### ⚙️ Backend (Server & API)
 - **Framework**: Java Spring Boot
@@ -66,17 +67,17 @@ BrokeBites is a smart meal-planning web and mobile app that uses AI ingredient r
   - Lombok
 - **API Endpoints**:
   - `/api/recipes` → Fetch recipes from database or Spoonacular
-  - `/api/ingredients/detect` → Process image input from Flutter app
+  - `/api/ingredients/detect` → Process image input from React Native app
   - `/api/users` → Manage user data and preferences
 
 ### 🧠 AI Module
-- **Language**: Python or integrated TensorFlow Lite model within Flutter
+- **Language**: Python or integrated TensorFlow Lite model
 - **Function**: Detect ingredients from images taken by the user
 - **Tooling**: Pre-trained CNN model fine-tuned with labeled ingredient data
-- **Integration**: Exposed as REST API endpoint or embedded inference model in Flutter
+- **Integration**: Exposed as REST API endpoint for React Native app to consume
 
 ### 🗄️ Database
-- **System**: MongoDB (Atlas)
+- **System**: MongoDB (Atlas or local)
 - **Collections**:
   - `users` (Auth0 IDs, saved recipes)
   - `recipes` (API data, custom user recipes)
@@ -85,7 +86,7 @@ BrokeBites is a smart meal-planning web and mobile app that uses AI ingredient r
 
 ### 🔐 Authentication
 - **Service**: Auth0
-- **Flow**: Flutter app authenticates users → retrieves access token → passes it to backend for secure API access
+- **Flow**: React Native app authenticates users → retrieves access token → passes it to backend for secure API access
 
 ### 🌍 External API
 - **Spoonacular API** – Used to generate and filter recipes by ingredient, calories, and nutrients
@@ -93,81 +94,100 @@ BrokeBites is a smart meal-planning web and mobile app that uses AI ingredient r
 ## 🧭 System Architecture
 
 ```
-         [Flutter App]
+      [React Native App]
           |        \
    (AI Ingredient)  (User Input)
           |           |
           v           v
      [Spring Boot Backend] <----> [Auth0 Authentication]
-          |
-          v
-      [MongoDB Atlas]
-          |
-          v
-   [Spoonacular API Integration]
+          |           |
+          v           v
+      [MongoDB]  [Spoonacular API]
 ```
 
 ## 🧪 MVP Features
 
 | Feature | Description | Status |
 |---------|-------------|--------|
-| Ingredient input | User types or uploads photo | 🚧 **Placeholder Ready** |
+| Ingredient input | User types or uploads photo | ✅ **Completed** |
 | AI ingredient detection | Detects ingredients via ML model | 🧠 **In Progress** |
-| Recipe generator | Fetches recipes via Spoonacular | 🚧 **Placeholder Ready** |
+| Recipe generator | Fetches recipes via Spoonacular | 🚧 **In Progress** |
 | Nutrition filters | Filter by protein, calories, etc. | 🚧 **Placeholder Ready** |
-| Authentication | Auth0 login & token validation | 🚧 **Placeholder Ready** |
-| Web support | Next.js app with responsive design | ✅ **Completed** |
+| Authentication | Auth0 login & token validation | ✅ **Completed** |
+| Mobile UI | React Native app with responsive design | ✅ **Completed** |
 
-## 🏗️ Project Structure & Placeholders
-
-This project is set up with **placeholder implementations** to allow you to build the features yourself:
+## 🏗️ Project Structure
 
 ### Frontend Structure
 ```
 frontend/
-├── src/
-│   ├── app/                    # Next.js app router pages
-│   │   ├── page.tsx           # Home page (✅ Complete)
-│   │   ├── search/            # Search page (🚧 Placeholder)
-│   │   └── auth/              # Auth pages (🚧 Placeholder)
-│   ├── components/            # Reusable components
-│   │   ├── ui/                # Basic UI components (✅ Complete)
-│   │   └── layout/            # Layout components (✅ Complete)
-│   ├── lib/                   # Utilities and API
-│   │   ├── api.ts             # API functions (🚧 Placeholder)
-│   │   └── utils.ts           # Helper functions (✅ Complete)
-│   └── types/                 # TypeScript type definitions (✅ Complete)
+├── screens/
+│   ├── RecipesScreen.js       # Recipe list page (✅ Complete)
+│   ├── RecipeDetailScreen.js  # Recipe details (🚧 Placeholder)
+│   └── ProfileScreen.js        # User profile (🚧 Placeholder)
+├── components/
+│   ├── LoginButton.js          # Auth0 login (✅ Complete)
+│   ├── LogoutButton.js         # Auth0 logout (✅ Complete)
+│   └── Profile.js              # User profile display (✅ Complete)
+├── services/
+│   └── api.js                  # API service layer (✅ Complete)
+├── AuthContext.js              # Auth state management (✅ Complete)
+└── App.js                      # Main app entry (✅ Complete)
+```
+
+### Backend Structure
+```
+backend/
+├── src/main/java/com/example/demo/
+│   ├── controller/
+│   │   ├── RecipeController.java      # Recipe endpoints (✅ Complete)
+│   │   ├── IngredientController.java  # Ingredient endpoints (✅ Complete)
+│   │   └── UserController.java        # User endpoints (✅ Complete)
+│   ├── model/
+│   │   ├── Recipe.java                # Recipe model (✅ Complete)
+│   │   ├── Ingredient.java            # Ingredient model (✅ Complete)
+│   │   └── User.java                  # User model (✅ Complete)
+│   ├── repository/
+│   │   ├── RecipeRepository.java      # Recipe DB access (✅ Complete)
+│   │   ├── IngredientRepository.java  # Ingredient DB access (✅ Complete)
+│   │   └── UserRepository.java        # User DB access (✅ Complete)
+│   └── service/
+│       ├── RecipeService.java         # Recipe business logic (🚧 In Progress)
+│       ├── IngredientService.java     # Ingredient logic (🚧 In Progress)
+│       └── UserService.java           # User logic (🚧 In Progress)
+└── src/main/resources/
+    └── application.properties         # Configuration (✅ Complete)
 ```
 
 ### What's Ready vs. What Needs Implementation
 
 #### ✅ **Ready to Use:**
-- **UI Components**: Button, Input, Card components with Tailwind styling
-- **Layout**: Header, Footer, responsive design
-- **Type Definitions**: Complete TypeScript interfaces for all data models
-- **Utility Functions**: Form validation, time formatting, etc.
-- **Project Structure**: Organized, scalable architecture
+- **React Native UI**: Recipe list, authentication, profile components
+- **Backend API Structure**: All controllers and models defined
+- **Database Schema**: MongoDB collections and repositories set up
+- **Authentication**: Auth0 integration in React Native
+- **API Service**: Frontend service layer for backend communication
 
-#### 🚧 **Placeholders for You to Implement:**
-- **API Integration**: All API calls are stubbed with `throw new Error('Not implemented yet')`
-- **Authentication**: Login/register forms ready, but no actual auth logic
-- **Recipe Search**: UI ready, but no actual search functionality
-- **Camera Integration**: Placeholder for ingredient scanning
-- **State Management**: Structure ready, but no actual state logic
+#### 🚧 **In Progress:**
+- **Spoonacular Integration**: Connecting to recipe API
+- **AI Ingredient Detection**: Image processing and ingredient recognition
+- **Recipe Search**: Advanced filtering and search functionality
+- **Service Layer**: Business logic implementation in backend
 
-#### 🎯 **Your Implementation Tasks:**
-1. **Connect to Backend**: Implement actual API calls in `src/lib/api.ts`
-2. **Add Authentication**: Integrate with Auth0 or implement custom auth
-3. **Build Recipe Search**: Connect to Spoonacular API or your backend
-4. **Implement Camera**: Add image capture and AI ingredient detection
-5. **Add State Management**: Use Zustand or Context for app state
-6. **Enhance UI**: Add loading states, error handling, animations
+#### 🎯 **Next Steps:**
+1. **Complete Spoonacular Integration**: Fetch and store recipe data
+2. **Implement AI Detection**: Build/integrate ingredient recognition model
+3. **Enhance Recipe Search**: Add filters for calories, protein, diet type
+4. **Add Recipe Details**: Create detailed recipe view screen
+5. **Implement Favorites**: Save and manage favorite recipes
+6. **Add Camera Integration**: Direct camera access for ingredient scanning
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 - Node.js (18.0 or higher)
 - npm or yarn package manager
+- Expo CLI (`npm install -g expo-cli`)
 - Java 17 or higher
 - Maven 3.6 or higher
 - MongoDB (local or Atlas)
@@ -178,15 +198,19 @@ frontend/
 1. **Clone the repository**
    ```bash
    git clone https://github.com/lazysince87/brokebites.git
-   cd brokebites/backend/demo
+   cd brokebites/backend
    ```
 
 2. **Configure MongoDB**
-   - Update `src/main/resources/application.properties` with your MongoDB connection string
+   - Update `src/main/resources/application.properties` with MongoDB connection string
    - For local MongoDB: `mongodb://localhost:27017/brokebites`
    - For MongoDB Atlas: Use your Atlas connection string
 
-3. **Run the backend**
+3. **Configure Auth0 (Optional for now)**
+   - Comment out Spring Security dependency in `pom.xml` for demo
+   - Add back later when implementing full authentication
+
+4. **Run the backend**
    ```bash
    ./mvnw spring-boot:run
    ```
@@ -202,28 +226,76 @@ frontend/
 2. **Install dependencies**
    ```bash
    npm install
-   # or
-   yarn install
    ```
 
 3. **Set up environment variables**
-   ```bash
-   cp env.example .env.local
-   # Edit .env.local with your configuration
+   Create a `.env` file:
+   ```env
+   AUTH0_DOMAIN=auth0-domain
+   AUTH0_CLIENT_ID=client-id
    ```
 
-4. **Run the development server**
-   ```bash
-   npm run dev
-   # or
-   yarn dev
+4. **Update API URL**
+   In `services/api.js`, update the API base URL:
+   ```javascript
+   // For iOS Simulator
+   const API_BASE_URL = 'http://localhost:8080/api';
+   
+   // For Android Emulator
+   const API_BASE_URL = 'http://10.0.2.2:8080/api';
+   
+   // For Physical Device (replace with your computer's IP)
+   const API_BASE_URL = 'http://192.168.1.XXX:8080/api';
    ```
-   The app will be available at `http://localhost:3000`
 
-5. **Build for production**
+5. **Run the app**
    ```bash
-   npm run build
+   # Start Expo development server
    npm start
+   
+   # Or with tunnel (for physical devices)
+   npx expo start --tunnel
+   
+   # For iOS simulator
+   npx expo start --ios
+   
+   # For Android emulator
+   npx expo start --android
+   ```
+
+### Database Setup
+
+1. **Install MongoDB (if using local)**
+   ```bash
+   # macOS
+   brew install mongodb-community
+   brew services start mongodb-community
+   
+   # Linux
+   sudo apt-get install mongodb
+   sudo systemctl start mongod
+   ```
+
+2. **Add sample data**
+   ```bash
+   mongosh
+   use brokebites
+   
+   db.recipes.insertMany([
+     {
+       title: "Quick Pasta",
+       description: "Easy pasta dish for students",
+       prepTimeMinutes: 10,
+       cookTimeMinutes: 15,
+       servings: 2,
+       ingredients: ["pasta", "tomato sauce", "cheese"],
+       instructions: ["Boil pasta", "Add sauce", "Top with cheese"],
+       tags: ["quick", "easy", "italian"],
+       rating: 4.5,
+       reviewCount: 100,
+       createdAt: new Date()
+     }
+   ])
    ```
 
 ### Environment Configuration
@@ -231,31 +303,30 @@ frontend/
 Create a `.env` file in the backend directory:
 ```env
 # MongoDB Configuration
-MONGODB_URI=mongodb://localhost:27017/brokebites
+spring.data.mongodb.uri=mongodb://localhost:27017/brokebites
 
 # Auth0 Configuration (for production)
-AUTH0_DOMAIN=your-auth0-domain
-AUTH0_CLIENT_ID=your-client-id
-AUTH0_CLIENT_SECRET=your-client-secret
+auth0.domain=auth0-domain
+auth0.client-id=client-id
+auth0.client-secret=client-secret
 
 # Spoonacular API (for recipe data)
-SPOONACULAR_API_KEY=your-spoonacular-api-key
+spoonacular.api.key=spoonacular-api-key
+spoonacular.api.base-url=https://api.spoonacular.com
 
 # AI Service Configuration
-AI_SERVICE_ENDPOINT=http://localhost:5000/api/detect-ingredients
+ai.service.endpoint=http://localhost:5000/api/detect-ingredients
 ```
 
-## 📱 App Screenshots
+### Recipes Screen
+- Recipe list with fetch button
+- Pull-to-refresh functionality
+- Recipe cards with details
 
-### Home Screen
-- Quick ingredient input
-- Recent and popular recipes
-- Camera integration for ingredient scanning
-
-### Recipe Discovery
-- Advanced filtering options
-- Nutrition information display
-- Save and share functionality
+### Authentication
+- Auth0 login integration
+- User profile display
+- Logout functionality
 
 ### Profile Management
 - User preferences
@@ -272,20 +343,28 @@ AI_SERVICE_ENDPOINT=http://localhost:5000/api/detect-ingredients
 - `GET /api/recipes/saved` - Get saved recipes
 - `POST /api/recipes/{id}/save` - Save a recipe
 - `DELETE /api/recipes/{id}/unsave` - Unsave a recipe
+- `GET /api/recipes/popular` - Get popular recipes
+- `GET /api/recipes/recent` - Get recent recipes
 
 ### Ingredient Endpoints
 - `GET /api/ingredients` - Get all ingredients
 - `POST /api/ingredients/detect` - Detect ingredients from image
-- `GET /api/ingredients/search?q={query}` - Search ingredients
+- `POST /api/ingredients/search` - Search ingredients
 - `GET /api/ingredients/category/{category}` - Get by category
+- `POST /api/ingredients` - Create ingredient
+- `PUT /api/ingredients/{id}` - Update ingredient
+- `DELETE /api/ingredients/{id}` - Delete ingredient
 
 ### User Endpoints
 - `GET /api/users/{id}` - Get user by ID
+- `GET /api/users/email/{email}` - Get user by email
 - `POST /api/users` - Create user
 - `PUT /api/users/{id}` - Update user
 - `PUT /api/users/{id}/preferences` - Update preferences
 - `POST /api/users/{id}/saved-recipes/{recipeId}` - Add saved recipe
 - `DELETE /api/users/{id}/saved-recipes/{recipeId}` - Remove saved recipe
+- `POST /api/users/{id}/favorite-ingredients/{ingredientName}` - Add favorite ingredient
+- `DELETE /api/users/{id}/favorite-ingredients/{ingredientName}` - Remove favorite ingredient
 
 ## ⚠️ Risk Management Plan
 
@@ -307,8 +386,8 @@ AI_SERVICE_ENDPOINT=http://localhost:5000/api/detect-ingredients
 | Component | Tool | Command |
 |-----------|------|---------|
 | Backend | Spring Boot | `./mvnw spring-boot:run` |
-| Frontend | Next.js | `npm run dev` |
-| Database | MongoDB Atlas | Cloud-hosted |
+| Frontend | React Native + Expo | `npm start` |
+| Database | MongoDB | `mongosh` or MongoDB Compass |
 | Auth | Auth0 | Config via .env |
 
 ## 🤝 Contributing
@@ -330,9 +409,10 @@ For support, email support@brokebites.app or join our Discord community.
 ## 🙏 Acknowledgments
 
 - Team JAMBOREE for the amazing collaboration
-- Flutter and Spring Boot communities for excellent documentation
+- React Native and Spring Boot communities for excellent documentation
 - Spoonacular API for recipe data
 - MongoDB for database services
+- Auth0 for authentication services
 
 ---
 
