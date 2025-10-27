@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   fetchButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#049623',
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   retryButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#049623',
     paddingHorizontal: 32,
     paddingVertical: 12,
     borderRadius: 12,
