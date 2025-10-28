@@ -1,22 +1,30 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { AuthProvider } from './AuthContext';
-import LoginButton from './components/LoginButton';
-import LogoutButton from './components/LogoutButton';
-import Profile from './components/Profile';
-import RecipeDemo from './screens/RecipesScreen';
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import {HeaderOptions} from './screens/Header';
+import LandingScreen from './screens/LandingScreen';
+import LoginScreen from './screens/LoginScreen';
+import RecipesScreen from './screens/RecipesScreen';
+import IngredientsScreen from './screens/IngredientsScreen';
 
 export default function App() {
+  const Stack = createNativeStackNavigator();
+
   return (
     // Wrap the app with AuthProvider to manage authentication state
     <AuthProvider>
-      <View style={styles.container}>
-        <RecipeDemo />
-        <Text style={styles.title}>Auth0 Login</Text>
-        <LoginButton />
-        <LogoutButton />
-        <Profile />
-      </View>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Landing" component={LandingScreen} options={{title: "Home"}}/>
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Recipes" component={RecipesScreen} />
+          <Stack.Screen name="Ingredients" component={IngredientsScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </AuthProvider>
   );
 }
