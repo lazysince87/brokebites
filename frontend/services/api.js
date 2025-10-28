@@ -96,6 +96,139 @@ class ApiService {
     }
   }
 
+  // Get ingredient by ID
+  async getIngredientById(id) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/ingredients/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching ingredients:', error);
+      throw error;
+    }
+  }
+
+  //Create new ingredient
+  async createIngredient(ingredient) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/ingredients`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(ingredient),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error creating ingredient:', error);
+      throw error;
+    }
+  }
+
+  // Update ingredient
+  async updateIngredient(id, ingredient) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/ingredients/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(ingredient),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error updating ingredient:', error);
+      throw error;
+    }
+  }
+
+  // Delete ingredient
+  async deleteIngredient(id) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/ingredients/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error('Error deleting ingredient:', error);
+      throw error;
+    }
+  }
+
+  // Search ingredients
+  async searchIngredients(query) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/ingredients/search?query=${encodeURIComponent(query)}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error searching ingredients:', error);
+      throw error;
+    }
+  }
+
+  //Get Ingredient by category
+  async getIngredientsByCategory(category) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/ingredients/category/${category}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching ingredients by category:', error);
+      throw error;
+    }
+  }
+
   // Test connection
   async testConnection() {
     try {
