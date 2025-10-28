@@ -14,7 +14,6 @@ const LoginScreen = () => {
     // Wrap the app with AuthProvider to manage authentication state
     <AuthProvider>
       <View style={styles.container}>
-        <RecipeDemo />
         <Text style={styles.title}>Auth0 Login</Text>
         <LoginButton />
         <LogoutButton />

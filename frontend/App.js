@@ -18,7 +18,7 @@ export default function App() {
     // Wrap the app with AuthProvider to manage authentication state
     <AuthProvider>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions={({ navigation }) => HeaderOptions({navigation})}>
           <Stack.Screen name="Landing" component={LandingScreen} options={{title: "Home"}}/>
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Recipes" component={RecipesScreen} />

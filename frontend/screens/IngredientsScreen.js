@@ -141,18 +141,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
   },
-  fetchButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 3,
-},
 buttonDisabled: {
     opacity: 0.6,
 },
@@ -170,7 +158,7 @@ plusButton: {
   height: 60,
   borderRadius: 30,
 
-  backgroundColor: '#007AFF',
+  backgroundColor: '#049623',
   alignItems: 'center',
   justifyContent: 'center',
   shadowColor: '#000',
@@ -183,7 +171,7 @@ plusText: {
   color: '#fff',
   fontSize: 32,
   fontWeight: '600',
-  marginTop: -3,
+  marginTop: -7,
 },
 listContainer: {
     paddingHorizontal: 20,
