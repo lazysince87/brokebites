@@ -31,7 +31,7 @@ public class Ingredient {
     private Double confidence;
     
     @Field("is_detected")
-    private Boolean isDetected = false; // if detected by ai thru image recognition
+    private Boolean isDetected = false;
     
     @Field("detected_at")
     private LocalDateTime detectedAt;
