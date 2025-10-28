@@ -1,14 +1,13 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { AuthContext } from '../AuthContext';
+import { useAuth } from '../AuthContext';
 
 const HeaderButtons = ({ navigation }) => {
-  // const { isLoggedIn, logout } = useContext(AuthContext);
-  const isLoggedIn = false; // Temporary
+  const { user } = useAuth();
 
   return (
     <View style={styles.Container}>
-        {!isLoggedIn && (<>
+        {!user && (<>
             <TouchableOpacity onPress={() => navigation.navigate("Recipes")}>
             <Text style={styles.TextButton}>Recipes</Text>
             </TouchableOpacity>
@@ -20,7 +19,7 @@ const HeaderButtons = ({ navigation }) => {
             </TouchableOpacity>
         </>)}
 
-        {isLoggedIn && (<>
+        {user && (<>
             <TouchableOpacity onPress={() => navigation.navigate("Recipes")}>
             <Text style={styles.TextButton}>Recipes</Text>
             </TouchableOpacity>

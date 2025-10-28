@@ -20,7 +20,7 @@ const LandingScreen = ({navigation}) => {
       <TouchableOpacity style= {styles.HighlightedButton} onPress= {() => {navigation.navigate("Login")}}>Register Now</TouchableOpacity>
       <Image 
         source={require("../assets/Leaf.png")} 
-        style={{
+        style={{  
           width: 500,
           height: 350,
           resizeMode: "contain",
