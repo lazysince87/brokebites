@@ -224,6 +224,30 @@ class ApiService {
     }
   }
 
+  // Upload image for AI ingredient detection
+async detectIngredients(formData) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/ingredients/detect`, {
+      method: "POST",
+      headers: {
+        // DO NOT set Content-Type for multipart uploads
+        // fetch will set the correct boundary automatically
+        "Accept": "application/json",
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error detecting ingredients:", error);
+    throw error;
+  }
+}
+
   // Test connection
   async testConnection() {
     try {

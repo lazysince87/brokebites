@@ -15,6 +15,7 @@ import java.util.Optional;
 public class RecipeService {
     
     private final RecipeRepository recipeRepository;
+    private final GeminiService geminiService;
     
     public List<Recipe> getAllRecipes() {
         return recipeRepository.findAll();
@@ -32,6 +33,10 @@ public class RecipeService {
         
         // Search for recipes that contain any of the provided ingredients
         return recipeRepository.findByIngredientsIn(ingredients);
+    }
+
+    public String generateRecipesFromAI(List<String> ingredients) {
+        return geminiService.generateRecipes(ingredients);
     }
     
     public List<Recipe> searchRecipesWithFilters(Map<String, Object> filters) {

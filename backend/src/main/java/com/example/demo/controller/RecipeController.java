@@ -79,4 +79,11 @@ public class RecipeController {
         List<Recipe> recipes = recipeService.getRecentRecipes();
         return ResponseEntity.ok(recipes);
     }
+
+    @PostMapping("/generate")
+    public ResponseEntity<String> generateRecipes(@RequestBody List<String> ingredients) {
+        String markdownRecipes = recipeService.generateRecipesFromAI(ingredients);
+        return ResponseEntity.ok(markdownRecipes);
+    }
+
 }

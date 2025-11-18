@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/ingredients")
@@ -33,13 +35,11 @@ public class IngredientController {
     }
     
     @PostMapping("/detect")
-    public ResponseEntity<List<Ingredient>> detectIngredientsFromImage(@RequestParam("image") MultipartFile image) {
-        try {
-            List<Ingredient> ingredients = ingredientService.detectIngredientsFromImage(image);
-            return ResponseEntity.ok(ingredients);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<Map<String, Object>> detectIngredients(
+            @RequestParam("image") MultipartFile image
+    ) throws IOException {
+        Map<String, Object> ingredients = ingredientService.detectIngredients(image);
+        return ResponseEntity.ok(ingredients);
     }
     
     @PostMapping("/search")
