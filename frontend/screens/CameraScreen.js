@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, ScrollView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import ApiService from "../services/api";
+import RecipeGenerator from "./RecipeGenerator";
 
 const CameraScreen = () => {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [detectedIngredients, setDetectedIngredients] = useState([]);
+  const [showRecipeGenerator, setShowRecipeGenerator] = useState(false);
+  const [generating, setGenerating] = useState(false);
 
   const openCamera = async () => {
     try {
@@ -60,6 +63,8 @@ const CameraScreen = () => {
     if (!image) return;
 
     setLoading(true);
+    setShowRecipeGenerator(false);
+    setGenerating(false);
     try {
       const formData = new FormData();
       
@@ -146,14 +151,32 @@ const CameraScreen = () => {
         )}
 
         {detectedIngredients.length > 0 && (
-          <View style={styles.resultsContainer}>
+        <>
+            <View style={styles.resultsContainer}>
             <Text style={styles.resultsTitle}>Detected Ingredients:</Text>
             {detectedIngredients.map((ingredient, index) => (
-              <View key={ingredient.id || index} style={styles.ingredientItem}>
+                <View key={ingredient.id || index} style={styles.ingredientItem}>
                 <Text style={styles.ingredientText}>• {ingredient.name}</Text>
-              </View>
+                </View>
             ))}
-          </View>
+            </View>
+
+            <TouchableOpacity
+            style={[styles.generateButton, generating && styles.disabledButton]}
+            onPress={() => setShowRecipeGenerator(true)}
+            disabled={generating}
+            >
+            <Text style={styles.buttonText}>
+                {generating ? "Generating..." : "🍳 Generate Recipes"}
+            </Text>
+            </TouchableOpacity>
+        </>
+        )}
+
+        {showRecipeGenerator && detectedIngredients.length > 0 && (
+        <View style={styles.recipeGeneratorWrapper}>
+            <RecipeGenerator ingredients={detectedIngredients.map(i => i.name)} />
+        </View>
         )}
 
         <Text style={styles.infoText}>
@@ -269,6 +292,26 @@ const styles = StyleSheet.create({
     color: "#666", 
     textAlign: "center",
     paddingHorizontal: 20,
+  },
+  generateButton: {
+    backgroundColor: "#ff9800",
+    padding: 15,
+    borderRadius: 12,
+    marginTop: 15,
+    minWidth: 280,
+    alignItems: "center",
+  },
+  recipeGeneratorWrapper: {
+    marginTop: 20,
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 12,
+    padding: 10,
+    backgroundColor: "#fefefe",
+  },  
+  recipeScroll: {
+    width: "100%",
   },
 });
 
