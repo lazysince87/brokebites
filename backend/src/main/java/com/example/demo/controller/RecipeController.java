@@ -79,4 +79,33 @@ public class RecipeController {
         List<Recipe> recipes = recipeService.getRecentRecipes();
         return ResponseEntity.ok(recipes);
     }
+
+    @PostMapping("/generate")
+    public ResponseEntity<String> generateRecipes(@RequestBody List<String> ingredients) {
+        String markdownRecipes = recipeService.generateRecipesFromAI(ingredients);
+        return ResponseEntity.ok(markdownRecipes);
+    }
+
+    @PostMapping("/generate/save")
+    public ResponseEntity<Map<String, Object>> saveGeneratedRecipe(@RequestBody Map<String, Object> payload) {
+        try {
+            String markdown = (String) payload.get("recipeText");
+            List<String> ingredients = (List<String>) payload.get("ingredients");
+
+            // Create Recipe entity
+            Recipe recipe = new Recipe();
+            recipe.setTitle("Generated Recipe"); // Optionally parse first line from markdown
+            recipe.setDescription("AI generated recipe");
+            recipe.setIngredients(ingredients);
+            recipe.setInstructions(List.of(markdown)); // store markdown as instruction for now
+            recipe.setIsSaved(true);
+
+            Recipe savedRecipe = recipeService.createRecipe(recipe);
+            return ResponseEntity.ok(Map.of("success", true, "recipe", savedRecipe));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", e.getMessage()));
+        }
+    }
+
 }

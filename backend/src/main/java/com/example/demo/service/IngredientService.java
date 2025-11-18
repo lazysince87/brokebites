@@ -6,15 +6,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class IngredientService {
     
     private final IngredientRepository ingredientRepository;
+    private final GeminiService geminiService;
     
     public List<Ingredient> getAllIngredients() {
         return ingredientRepository.findAll();
@@ -25,10 +26,54 @@ public class IngredientService {
         return ingredient.orElse(null);
     }
     
-    public List<Ingredient> detectIngredientsFromImage(MultipartFile image) {
-        // TODO: Implement AI image recognition
-        // For now, return mock detected ingredients
-        return getMockDetectedIngredients();
+    public Map<String, Object> detectIngredients(MultipartFile image) throws IOException {
+        try {
+            // Get ingredient names from Gemini
+            List<String> detectedIngredientNames = geminiService.extractIngredientsFromImage(image);
+            
+            if (detectedIngredientNames.isEmpty()) {
+                return Map.of(
+                    "success", false,
+                    "message", "No food ingredients detected in the image",
+                    "ingredients", Collections.emptyList()
+                );
+            }
+            
+            List<Ingredient> savedIngredients = new ArrayList<>();
+            
+            for (String ingredientName : detectedIngredientNames) {
+                List<Ingredient> existing = ingredientRepository.findByNameContaining(ingredientName);
+                
+                if (existing.isEmpty()) {
+                    Ingredient newIngredient = new Ingredient();
+                    newIngredient.setName(ingredientName);
+                    newIngredient.setCategory("detected");
+                    newIngredient.setDetectedFromImage(true);
+                    newIngredient.setCreatedAt(LocalDateTime.now());
+                    newIngredient.setUpdatedAt(LocalDateTime.now());
+                    
+                    Ingredient saved = ingredientRepository.save(newIngredient);
+                    savedIngredients.add(saved);
+                } else {
+                    savedIngredients.add(existing.get(0));
+                }
+            }
+            
+            return Map.of(
+                "success", true,
+                "message", "Detected " + savedIngredients.size() + " ingredients",
+                "ingredients", savedIngredients,
+                "ingredientNames", detectedIngredientNames
+            );
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Map.of(
+                "success", false,
+                "error", e.getMessage(),
+                "message", "Failed to detect ingredients: " + e.getMessage()
+            );
+        }
     }
     
     public List<Ingredient> searchIngredients(String query) {
@@ -63,27 +108,5 @@ public class IngredientService {
             return true;
         }
         return false;
-    }
-    
-    private List<Ingredient> getMockDetectedIngredients() {
-        // Mock detected ingredients for development
-        return List.of(
-            new Ingredient(
-                "1", "Tomato", "vegetables", null, 0.95, true, LocalDateTime.now(),
-                LocalDateTime.now(), LocalDateTime.now()
-            ),
-            new Ingredient(
-                "2", "Onion", "vegetables", null, 0.88, true, LocalDateTime.now(),
-                LocalDateTime.now(), LocalDateTime.now()
-            ),
-            new Ingredient(
-                "3", "Bell Pepper", "vegetables", null, 0.92, true, LocalDateTime.now(),
-                LocalDateTime.now(), LocalDateTime.now()
-            ),
-            new Ingredient(
-                "4", "Garlic", "vegetables", null, 0.76, true, LocalDateTime.now(),
-                LocalDateTime.now(), LocalDateTime.now()
-            )
-        );
     }
 }
