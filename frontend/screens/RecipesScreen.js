@@ -15,6 +15,7 @@ const RecipesScreen = () => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [expandedCards, setExpandedCards] = useState(new Set());
 
   const loadRecipes = async () => {
     setLoading(true);
@@ -43,36 +44,63 @@ const RecipesScreen = () => {
     }
   };
 
-  const renderRecipe = ({ item }) => (
-    <TouchableOpacity style={styles.recipeCard} activeOpacity={0.8}>
-      <Text style={styles.recipeTitle}>{item.name}</Text>
+  const toggleCard = (key) => {
+    setExpandedCards((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
 
-      <View style={styles.recipeDetails}>
-        <Text style={styles.detailText}>
-          ⏱️ {(item.prepTimeMinutes || 0) + (item.cookTimeMinutes || 0)} min
-        </Text>
-        <Text style={styles.detailText}>🍽️ {item.servings} servings</Text>
-        {item.rating && <Text style={styles.detailText}>⭐ {item.rating}</Text>}
-      </View>
+  const renderRecipe = ({ item, index }) => {
+    const key = `${item.id ?? item.name}-${index}`;
+    const expanded = expandedCards.has(key);
 
-      {item.tags && item.tags.length > 0 && (
-        <View style={styles.tagsContainer}>
-          {item.tags.map((tag, index) => (
-            <View key={index} style={styles.tag}>
-              <Text style={styles.tagText}>{tag}</Text>
-            </View>
-          ))}
+    return (
+      <TouchableOpacity
+        style={styles.recipeCard}
+        activeOpacity={0.85}
+        onPress={() => toggleCard(key)}
+      >
+        <Text style={styles.recipeTitle}>{item.name || item.title}</Text>
+
+        <View style={styles.recipeDetails}>
+          <Text style={styles.detailText}>
+            ⏱️ {(item.prepTimeMinutes || 0) + (item.cookTimeMinutes || 0)} min
+          </Text>
+          <Text style={styles.detailText}>🍽️ {item.servings || '-' } servings</Text>
+          {item.rating && <Text style={styles.detailText}>⭐ {item.rating}</Text>}
         </View>
-      )}
 
-      {item.ingredients && item.ingredients.length > 0 && (
-        <View style={styles.ingredientsContainer}>
-          <Text style={styles.ingredientsLabel}>Ingredients:</Text>
-          <Text style={styles.ingredients}>{item.ingredients.join(', ')}</Text>
-        </View>
-      )}
-    </TouchableOpacity>
-  );
+        {item.tags && item.tags.length > 0 && (
+          <View style={styles.tagsContainer}>
+            {item.tags.map((tag, i) => (
+              <View key={i} style={styles.tag}>
+                <Text style={styles.tagText}>{tag}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {item.ingredients && item.ingredients.length > 0 && (
+          <View style={styles.ingredientsContainer}>
+            <Text style={styles.ingredientsLabel}>Ingredients:</Text>
+            <Text style={styles.ingredients}>{item.ingredients.join(', ')}</Text>
+          </View>
+        )}
+
+        {expanded && item.instructions && item.instructions.length > 0 && (
+          <View style={styles.instructionsContainer}>
+            <Text style={styles.instructionsTitle}>Instructions</Text>
+            {item.instructions.map((step, i) => (
+              <Text key={i} style={styles.instructionStep}>{`${i + 1}. ${step}`}</Text>
+            ))}
+          </View>
+        )}
+      </TouchableOpacity>
+    );
+  };
 
   if (loading && recipes.length === 0) {
     return (
@@ -259,6 +287,26 @@ const styles = StyleSheet.create({
   ingredients: {
     fontSize: 14,
     color: '#666',
+    lineHeight: 20,
+  },
+  instructionsContainer: {
+    marginTop: 10,
+    padding: 12,
+    borderRadius: 12,
+    backgroundColor: '#fff8e1',
+    borderWidth: 1,
+    borderColor: '#ffe082',
+  },
+  instructionsTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#a65e00',
+    marginBottom: 8,
+  },
+  instructionStep: {
+    fontSize: 14,
+    color: '#6b4a00',
+    marginBottom: 6,
     lineHeight: 20,
   },
   emptyState: {

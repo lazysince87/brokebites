@@ -31,8 +31,29 @@ public class RecipeService {
             return getAllRecipes();
         }
         
-        // Search for recipes that contain any of the provided ingredients
-        return recipeRepository.findByIngredientsIn(ingredients);
+        // Fuzzy search: case-insensitive substring match against recipe ingredients
+        List<String> queries = ingredients.stream()
+                .filter(s -> s != null && !s.isBlank())
+                .map(String::toLowerCase)
+                .toList();
+
+        if (queries.isEmpty()) {
+            return getAllRecipes();
+        }
+
+        return getAllRecipes().stream()
+                .filter(recipe -> {
+                    if (recipe.getIngredients() == null || recipe.getIngredients().isEmpty()) return false;
+                    for (String ing : recipe.getIngredients()) {
+                        if (ing == null) continue;
+                        String ingLower = ing.toLowerCase();
+                        for (String q : queries) {
+                            if (ingLower.contains(q)) return true;
+                        }
+                    }
+                    return false;
+                })
+                .toList();
     }
 
     public String generateRecipesFromAI(List<String> ingredients) {
