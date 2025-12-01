@@ -18,11 +18,9 @@ const RecipesScreen = () => {
 
   const loadRecipes = async () => {
     setLoading(true);
-    
     try {
       const data = await ApiService.getAllRecipes();
       setRecipes(data);
-      
       if (data.length === 0) {
         Alert.alert('Info', 'No recipes found');
       }
@@ -46,10 +44,9 @@ const RecipesScreen = () => {
   };
 
   const renderRecipe = ({ item }) => (
-    <TouchableOpacity style={styles.recipeCard} activeOpacity={0.7}>
-      <Text style={styles.recipeTitle}>{item.title}</Text>
-      <Text style={styles.recipeDescription}>{item.description}</Text>
-      
+    <TouchableOpacity style={styles.recipeCard} activeOpacity={0.8}>
+      <Text style={styles.recipeTitle}>{item.name}</Text>
+
       <View style={styles.recipeDetails}>
         <Text style={styles.detailText}>
           ⏱️ {(item.prepTimeMinutes || 0) + (item.cookTimeMinutes || 0)} min
@@ -57,7 +54,7 @@ const RecipesScreen = () => {
         <Text style={styles.detailText}>🍽️ {item.servings} servings</Text>
         {item.rating && <Text style={styles.detailText}>⭐ {item.rating}</Text>}
       </View>
-      
+
       {item.tags && item.tags.length > 0 && (
         <View style={styles.tagsContainer}>
           {item.tags.map((tag, index) => (
@@ -67,14 +64,12 @@ const RecipesScreen = () => {
           ))}
         </View>
       )}
-      
+
       {item.ingredients && item.ingredients.length > 0 && (
-        <>
+        <View style={styles.ingredientsContainer}>
           <Text style={styles.ingredientsLabel}>Ingredients:</Text>
-          <Text style={styles.ingredients} numberOfLines={2}>
-            {item.ingredients.join(', ')}
-          </Text>
-        </>
+          <Text style={styles.ingredients}>{item.ingredients.join(', ')}</Text>
+        </View>
       )}
     </TouchableOpacity>
   );
@@ -90,28 +85,34 @@ const RecipesScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Recipes</Text>
-        <Text style={styles.headerSubtitle}>{recipes.length} recipes available</Text>
+      {/* Header + Fetch button fixed at top */}
+      <View style={styles.topContainer}>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Recipes</Text>
+          <Text style={styles.headerSubtitle}>{recipes.length} recipes available</Text>
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[styles.fetchButton, loading && styles.buttonDisabled]}
+            onPress={loadRecipes}
+            disabled={loading}
+          >
+            <Text style={styles.buttonText}>
+              {loading ? 'Loading...' : 'Fetch Recipes'}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.fetchButton, loading && styles.buttonDisabled]}
-          onPress={loadRecipes}
-          disabled={loading}
-        >
-          <Text style={styles.buttonText}>
-            {loading ? 'Loading...' : 'Fetch Recipes'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-
+      {/* Scrollable recipe list */}
       {recipes.length === 0 ? (
         <View style={styles.emptyState}>
           <Text style={styles.emptyEmoji}>🍳</Text>
           <Text style={styles.emptyText}>No recipes yet</Text>
-          <Text style={styles.emptySubtext}>Check back soon for delicious recipes!</Text>
+          <Text style={styles.emptySubtext}>
+            Check back soon for delicious recipes!
+          </Text>
           <TouchableOpacity style={styles.retryButton} onPress={loadRecipes}>
             <Text style={styles.retryButtonText}>Retry</Text>
           </TouchableOpacity>
@@ -120,12 +121,13 @@ const RecipesScreen = () => {
         <FlatList
           data={recipes}
           renderItem={renderRecipe}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item, index) => `${item.name}-${index}`}
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
+          style={{ flex: 1 }}
         />
       )}
     </View>
@@ -136,6 +138,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
+  },
+  topContainer: {
+    paddingBottom: 10,
   },
   centerContainer: {
     flex: 1,
@@ -168,7 +173,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingVertical: 10,
   },
   fetchButton: {
     backgroundColor: '#049623',
@@ -197,13 +202,13 @@ const styles = StyleSheet.create({
   },
   recipeCard: {
     backgroundColor: '#fff',
-    padding: 16,
+    padding: 20,
     borderRadius: 16,
     marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
-    shadowRadius: 8,
+    shadowRadius: 6,
     elevation: 3,
   },
   recipeTitle: {
@@ -211,12 +216,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#1a1a1a',
     marginBottom: 6,
-  },
-  recipeDescription: {
-    fontSize: 15,
-    color: '#666',
-    marginBottom: 12,
-    lineHeight: 20,
   },
   recipeDetails: {
     flexDirection: 'row',
@@ -245,12 +244,17 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '500',
   },
+  ingredientsContainer: {
+    marginTop: 6,
+    padding: 12,
+    borderRadius: 12,
+    backgroundColor: '#f9f9f9',
+  },
   ingredientsLabel: {
     fontSize: 15,
     fontWeight: '600',
     color: '#1a1a1a',
-    marginBottom: 6,
-    marginTop: 4,
+    marginBottom: 4,
   },
   ingredients: {
     fontSize: 14,

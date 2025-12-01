@@ -41,6 +41,8 @@ public class Ingredient {
     
     @Field("updated_at")
     private LocalDateTime updatedAt;
+
+    private Boolean detectedFromImage;
     
     // Helper methods
     public Boolean isHighConfidence() {

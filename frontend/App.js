@@ -10,6 +10,7 @@ import LandingScreen from './screens/LandingScreen';
 import LoginScreen from './screens/LoginScreen';
 import RecipesScreen from './screens/RecipesScreen';
 import IngredientsScreen from './screens/IngredientsScreen';
+import CameraScreen from './screens/CameraScreen';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -23,6 +24,7 @@ export default function App() {
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Recipes" component={RecipesScreen} />
           <Stack.Screen name="Ingredients" component={IngredientsScreen} />
+          <Stack.Screen name="CameraScreen" component={CameraScreen} options={{ title: "Scan Ingredients" }} />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthProvider>

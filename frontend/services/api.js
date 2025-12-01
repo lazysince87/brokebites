@@ -1,10 +1,10 @@
 // Replace with your computer's IP address when testing on physical device
 // For Android emulator use: 10.0.2.2
 // For iOS simulator use: localhost
-const API_BASE_URL = 'http://localhost:8080/api';
+// const API_BASE_URL = 'http://localhost:8080/api';
 
 // If testing on physical device, replace localhost with your computer's IP:
-// const API_BASE_URL = 'http://192.168.1.XXX:8080/api';
+ const API_BASE_URL = 'http://100.70.36.34:8080/api';
 
 class ApiService {
   // Get all recipes
@@ -72,6 +72,28 @@ class ApiService {
       console.error('Error searching recipes:', error);
       throw error;
     }
+  }
+
+  // Generate recipes using AI
+  async generateRecipes(ingredients) {
+    const response = await fetch(`${API_BASE_URL}/recipes/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(ingredients),
+    });
+    if (!response.ok) throw new Error('Failed to generate recipes');
+    return await response.text(); // backend returns markdown string
+  }
+
+  // Save a generated recipe
+  async saveGeneratedRecipe(recipeText, ingredients) {
+    const response = await fetch(`${API_BASE_URL}/recipes/generate/save`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ recipeText, ingredients }),
+    });
+    if (!response.ok) return { success: false };
+    return await response.json(); // { success: true, recipe: {...} }
   }
 
   // Get all ingredients
@@ -223,6 +245,30 @@ class ApiService {
       throw error;
     }
   }
+
+  // Upload image for AI ingredient detection
+async detectIngredients(formData) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/ingredients/detect`, {
+      method: "POST",
+      headers: {
+        // DO NOT set Content-Type for multipart uploads
+        // fetch will set the correct boundary automatically
+        "Accept": "application/json",
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error detecting ingredients:", error);
+    throw error;
+  }
+}
 
   // Test connection
   async testConnection() {
