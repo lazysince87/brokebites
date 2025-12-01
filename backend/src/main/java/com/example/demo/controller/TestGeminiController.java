@@ -34,7 +34,7 @@ public class TestGeminiController {
             );
 
             URI uri = UriComponentsBuilder
-                    .fromHttpUrl("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent")
+                    .fromUriString("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent")
                     .queryParam("key", apiKey)
                     .build()
                     .toUri();
@@ -65,10 +65,13 @@ public class TestGeminiController {
             System.out.println("Gemini API Response: " + response.getBody());
 
             // Extract the text response
+            @SuppressWarnings("unchecked")
             List<Map<String, Object>> candidates = (List<Map<String, Object>>) response.getBody().get("candidates");
             String responseText = "";
             if (candidates != null && !candidates.isEmpty()) {
+                @SuppressWarnings("unchecked")
                 Map<String, Object> content = (Map<String, Object>) candidates.get(0).get("content");
+                @SuppressWarnings("unchecked")
                 List<Map<String, Object>> parts = (List<Map<String, Object>>) content.get("parts");
                 if (parts != null && !parts.isEmpty()) {
                     responseText = parts.get(0).get("text").toString();

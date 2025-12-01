@@ -115,12 +115,15 @@ public class GeminiService {
 
     private String extractTextFromGeminiResponse(Map<String, Object> responseBody) {
         try {
+            @SuppressWarnings("unchecked")
             List<Map<String, Object>> candidates = (List<Map<String, Object>>) responseBody.get("candidates");
             if (candidates == null || candidates.isEmpty()) {
                 throw new RuntimeException("No candidates in response");
             }
 
+            @SuppressWarnings("unchecked")
             Map<String, Object> content = (Map<String, Object>) candidates.get(0).get("content");
+            @SuppressWarnings("unchecked")
             List<Map<String, Object>> parts = (List<Map<String, Object>>) content.get("parts");
             
             if (parts == null || parts.isEmpty()) {
@@ -190,7 +193,7 @@ public class GeminiService {
 
         try {
             URI uri = UriComponentsBuilder
-                    .fromHttpUrl("https://generativelanguage.googleapis.com/v1beta/models/" + MODEL_NAME + ":generateContent")
+                    .fromUriString("https://generativelanguage.googleapis.com/v1beta/models/" + MODEL_NAME + ":generateContent")
                     .queryParam("key", apiKey)
                     .build()
                     .toUri();

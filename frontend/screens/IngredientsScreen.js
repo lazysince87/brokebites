@@ -87,6 +87,7 @@ const IngredientsScreen = () => {
   };
 
   const handleDeleteIngredient = (id, name) => {
+    console.log("Delete Button Clicked");
     Alert.alert(
       'Delete Ingredient',
       `Are you sure you want to delete "${name}"?`,
@@ -133,11 +134,12 @@ const IngredientsScreen = () => {
   };
 
   const renderIngredient = ({ item }) => (
+    
     <View style={styles.ingredientCard}>
       <View style={styles.ingredientInfo}>
         <View style={styles.ingredientHeader}>
           <Text style={styles.ingredientName}>{item.name}</Text>
-          {item.isDetected && (
+          {item.is_detected && (
             <Text style={styles.detectedBadge}>📷 Detected</Text>
           )}
         </View>
@@ -148,9 +150,9 @@ const IngredientsScreen = () => {
         
         {getConfidenceBadge(item.confidence)}
         
-        {item.createdAt && (
+        {item.created_at && (
           <Text style={styles.ingredientDate}>
-            Added: {new Date(item.createdAt).toLocaleDateString()}
+            Added: {new Date(item.created_at).toLocaleDateString()}
           </Text>
         )}
       </View>
@@ -181,6 +183,7 @@ const IngredientsScreen = () => {
           {ingredients.length} ingredient{ingredients.length !== 1 ? 's' : ''}
         </Text>
       </View>
+      
 
       {ingredients.length === 0 ? (
         <View style={styles.emptyState}>
