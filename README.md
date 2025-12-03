@@ -52,7 +52,7 @@ BrokeBites is a smart meal-planning mobile app that uses AI ingredient recogniti
   - `Expo` for development and deployment
   - `JavaScript/TypeScript` for type safety
   - `React Navigation` for app navigation
-  - `Axios` or `Fetch API` for REST API requests
+  - `Fetch API` for REST API requests
   - `React Native Camera` for image capture
   - `Auth0` for authentication
 - **Platform**: Android and iOS mobile devices
@@ -401,10 +401,6 @@ ai.service.endpoint=http://localhost:5000/api/detect-ingredients
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Support
-
-For support, email support@brokebites.app or join our Discord community.
 
 ## 🙏 Acknowledgments
 
