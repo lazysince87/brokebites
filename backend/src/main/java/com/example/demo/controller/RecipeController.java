@@ -32,6 +32,30 @@ public class RecipeController {
         return ResponseEntity.notFound().build();
     }
     
+    @PostMapping
+    public ResponseEntity<Recipe> createRecipe(@RequestBody Recipe recipe) {
+        Recipe createdRecipe = recipeService.createRecipe(recipe);
+        return ResponseEntity.ok(createdRecipe);
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<Recipe> updateRecipe(@PathVariable String id, @RequestBody Recipe recipe) {
+        Recipe updatedRecipe = recipeService.updateRecipe(id, recipe);
+        if (updatedRecipe != null) {
+            return ResponseEntity.ok(updatedRecipe);
+        }
+        return ResponseEntity.notFound().build();
+    }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRecipe(@PathVariable String id) {
+        boolean success = recipeService.deleteRecipe(id);
+        if (success) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+    
     @PostMapping("/search")
     public ResponseEntity<List<Recipe>> searchRecipesByIngredients(@RequestBody List<String> ingredients) {
         List<Recipe> recipes = recipeService.searchRecipesByIngredients(ingredients);
