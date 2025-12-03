@@ -3,43 +3,33 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useAuth } from '../AuthContext';
 
 const HeaderButtons = ({ navigation }) => {
-  const { user, logout } = useAuth(); 
+  const { user, logout } = useAuth();
 
   const handleSignOut = async () => {
     await logout(); // Clear user + token
     navigation.navigate("Login"); // Go back to login screen
   };
 
+  const isLoggedIn = !!user; 
+
   return (
     <View style={styles.Container}>
-      {/* Not logged in */}
-      {!user && (
-        <>
-          <TouchableOpacity onPress={() => navigation.navigate("Recipes")}>
-            <Text style={styles.TextButton}>Recipes</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("Ingredients")}>
-            <Text style={styles.TextButton}>Ingredients</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text style={styles.ReverseHighlightedButton}>Sign In</Text>
-          </TouchableOpacity>
-        </>
+      <TouchableOpacity onPress={() => navigation.navigate("Recipes")}>
+        <Text style={styles.TextButton}>Recipes</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("Ingredients")}>
+        <Text style={styles.TextButton}>Ingredients</Text>
+      </TouchableOpacity>
+      {!isLoggedIn && (
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <Text style={styles.ReverseHighlightedButton}>Sign In</Text>
+        </TouchableOpacity>
       )}
 
-      {/* Logged in */}
-      {user && (
-        <>
-          <TouchableOpacity onPress={() => navigation.navigate("Recipes")}>
-            <Text style={styles.TextButton}>Recipes</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate("Ingredients")}>
-            <Text style={styles.TextButton}>Ingredients</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleSignOut}>
-            <Text style={styles.ReverseHighlightedButton}>Sign Out</Text>
-          </TouchableOpacity>
-        </>
+      {isLoggedIn && (
+        <TouchableOpacity onPress={handleSignOut}>
+          <Text style={styles.ReverseHighlightedButton}>Sign Out</Text>
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -82,3 +72,5 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
 });
+
+export default HeaderButtons;
