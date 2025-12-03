@@ -20,9 +20,9 @@ const CameraScreen = () => {
       }
 
       const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images, 
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        quality: 0.7, 
+        quality: 0.7,
       });
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
@@ -34,7 +34,7 @@ const CameraScreen = () => {
       Alert.alert("Error", "Failed to open camera.");
     }
   };
-//allow selecting from device
+  //allow selecting from device
   const pickImage = async () => {
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -67,7 +67,7 @@ const CameraScreen = () => {
     setGenerating(false);
     try {
       const formData = new FormData();
-      
+
       // Get filename from URI
       const filename = image.split('/').pop();
       const match = /\.(\w+)$/.exec(filename);
@@ -86,7 +86,7 @@ const CameraScreen = () => {
       if (response.success) {
         const ingredients = response.ingredients || [];
         setDetectedIngredients(ingredients);
-        
+
         Alert.alert(
           "Success! 🎉",
           `Found ${ingredients.length} ingredients:\n${response.ingredientNames?.join(", ") || ""}`,
@@ -98,7 +98,7 @@ const CameraScreen = () => {
 
     } catch (error) {
       console.error("Upload error:", error);
-      
+
       let errorMessage = "Failed to detect ingredients. ";
       if (error.message.includes("Network request failed")) {
         errorMessage += "Cannot reach backend. Check your API URL and network connection.";
@@ -107,7 +107,7 @@ const CameraScreen = () => {
       } else {
         errorMessage += error.message;
       }
-      
+
       Alert.alert("Error", errorMessage);
     } finally {
       setLoading(false);
@@ -118,7 +118,7 @@ const CameraScreen = () => {
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
         <Text style={styles.title}>Scan Receipt for Ingredients</Text>
-        
+
         {image ? (
           <Image source={{ uri: image }} style={styles.preview} />
         ) : (
@@ -139,8 +139,8 @@ const CameraScreen = () => {
         </View>
 
         {image && (
-          <TouchableOpacity 
-            style={[styles.uploadButton, loading && styles.disabledButton]} 
+          <TouchableOpacity
+            style={[styles.uploadButton, loading && styles.disabledButton]}
             onPress={uploadImage}
             disabled={loading}
           >
@@ -151,32 +151,32 @@ const CameraScreen = () => {
         )}
 
         {detectedIngredients.length > 0 && (
-        <>
+          <>
             <View style={styles.resultsContainer}>
-            <Text style={styles.resultsTitle}>Detected Ingredients:</Text>
-            {detectedIngredients.map((ingredient, index) => (
+              <Text style={styles.resultsTitle}>Detected Ingredients:</Text>
+              {detectedIngredients.map((ingredient, index) => (
                 <View key={ingredient.id || index} style={styles.ingredientItem}>
-                <Text style={styles.ingredientText}>• {ingredient.name}</Text>
+                  <Text style={styles.ingredientText}>• {ingredient.name}</Text>
                 </View>
-            ))}
+              ))}
             </View>
 
             <TouchableOpacity
-            style={[styles.generateButton, generating && styles.disabledButton]}
-            onPress={() => setShowRecipeGenerator(true)}
-            disabled={generating}
+              style={[styles.generateButton, generating && styles.disabledButton]}
+              onPress={() => setShowRecipeGenerator(true)}
+              disabled={generating}
             >
-            <Text style={styles.buttonText}>
+              <Text style={styles.buttonText}>
                 {generating ? "Generating..." : "🍳 Generate Recipes"}
-            </Text>
+              </Text>
             </TouchableOpacity>
-        </>
+          </>
         )}
 
         {showRecipeGenerator && detectedIngredients.length > 0 && (
-        <View style={styles.recipeGeneratorWrapper}>
+          <View style={styles.recipeGeneratorWrapper}>
             <RecipeGenerator ingredients={detectedIngredients.map(i => i.name)} />
-        </View>
+          </View>
         )}
 
         <Text style={styles.infoText}>
@@ -191,10 +191,10 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
   },
-  container: { 
-    flex: 1, 
-    justifyContent: "center", 
-    alignItems: "center", 
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
     backgroundColor: "#f8f9fa",
   },
@@ -204,10 +204,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: "#333",
   },
-  preview: { 
-    width: 300, 
-    height: 300, 
-    borderRadius: 20, 
+  preview: {
+    width: 300,
+    height: 300,
+    borderRadius: 20,
     marginBottom: 20,
     borderWidth: 2,
     borderColor: "#049623",
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     borderColor: "#dee2e6",
     borderStyle: "dashed",
   },
-  placeholderText: { 
+  placeholderText: {
     fontSize: 80,
     marginBottom: 10,
   },
@@ -237,9 +237,9 @@ const styles = StyleSheet.create({
     gap: 10,
     marginBottom: 15,
   },
-  button: { 
-    backgroundColor: "#049623", 
-    padding: 15, 
+  button: {
+    backgroundColor: "#049623",
+    padding: 15,
     borderRadius: 12,
     minWidth: 140,
     alignItems: "center",
@@ -247,10 +247,10 @@ const styles = StyleSheet.create({
   secondaryButton: {
     backgroundColor: "#0066cc",
   },
-  uploadButton: { 
-    backgroundColor: "#ff6b35", 
-    padding: 15, 
-    borderRadius: 12, 
+  uploadButton: {
+    backgroundColor: "#ff6b35",
+    padding: 15,
+    borderRadius: 12,
     marginTop: 10,
     minWidth: 280,
     alignItems: "center",
@@ -258,9 +258,9 @@ const styles = StyleSheet.create({
   disabledButton: {
     opacity: 0.6,
   },
-  buttonText: { 
-    color: "#fff", 
-    fontSize: 18, 
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
     fontWeight: "600",
   },
   resultsContainer: {
@@ -286,10 +286,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333",
   },
-  infoText: { 
-    marginTop: 30, 
-    fontSize: 14, 
-    color: "#666", 
+  infoText: {
+    marginTop: 30,
+    fontSize: 14,
+    color: "#666",
     textAlign: "center",
     paddingHorizontal: 20,
   },
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 10,
     backgroundColor: "#fefefe",
-  },  
+  },
   recipeScroll: {
     width: "100%",
   },

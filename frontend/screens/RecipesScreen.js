@@ -66,7 +66,7 @@ const RecipesScreen = () => {
   };
 
   const renderRecipe = ({ item, index }) => {
-    const key = `${item.id ?? item.name}-${index}`;
+    const key = `${item.id ?? item.name ?? item.title ?? index}`;
     const expanded = expandedCards.has(key);
 
     return (
@@ -124,7 +124,9 @@ const RecipesScreen = () => {
       <View style={styles.topContainer}>
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Recipes</Text>
-          <Text style={styles.headerSubtitle}>{recipes.length} recipes available</Text>
+          <Text style={styles.headerSubtitle}>
+            {recipes.length} {recipes.length === 1 ? 'recipe' : 'recipes'} available
+          </Text>
         </View>
 
         <View style={styles.buttonContainer}>
@@ -156,7 +158,7 @@ const RecipesScreen = () => {
         <FlatList
           data={recipes}
           renderItem={renderRecipe}
-          keyExtractor={(item, index) => `${item.name}-${index}`}
+          keyExtractor={(item, index) => `${item.id ?? item.name ?? item.title ?? index}`}
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
           refreshControl={
