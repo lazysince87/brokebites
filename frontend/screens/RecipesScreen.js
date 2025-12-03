@@ -20,8 +20,20 @@ const RecipesScreen = () => {
   const loadRecipes = async () => {
     setLoading(true);
     try {
-      const data = await ApiService.getAllRecipes();
-      setRecipes(data);
+      // Fetch ingredients from backend and use their names to search recipes
+      const ingredientsFromServer = await ApiService.getAllIngredients();
+      const ingredientNames = Array.isArray(ingredientsFromServer)
+        ? ingredientsFromServer.map((ing) => ing && (ing.name || ing.title)).filter(Boolean)
+        : [];
+
+      let data;
+      if (ingredientNames.length === 0) {
+        // No ingredients available on server — fallback to retrieving all recipes
+        data = await ApiService.getAllRecipes();
+      } else {
+        data = await ApiService.searchRecipesByIngredients(ingredientNames);
+      }
+      setRecipes(data || []);
       if (data.length === 0) {
         Alert.alert('Info', 'No recipes found');
       }
@@ -64,12 +76,7 @@ const RecipesScreen = () => {
         onPress={() => toggleCard(key)}
       >
         <Text style={styles.recipeTitle}>{item.name || item.title}</Text>
-
         <View style={styles.recipeDetails}>
-          <Text style={styles.detailText}>
-            ⏱️ {(item.prepTimeMinutes || 0) + (item.cookTimeMinutes || 0)} min
-          </Text>
-          <Text style={styles.detailText}>🍽️ {item.servings || '-' } servings</Text>
           {item.rating && <Text style={styles.detailText}>⭐ {item.rating}</Text>}
         </View>
 

@@ -59,7 +59,9 @@ class ApiService {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(ingredients),
+        // Ensure we always send an array body; if `ingredients` is undefined/null
+        // send an empty array so backend receives a consistent payload.
+        body: JSON.stringify(Array.isArray(ingredients) ? ingredients : []),
       });
 
       if (!response.ok) {

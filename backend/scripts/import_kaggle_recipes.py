@@ -24,6 +24,7 @@ from datetime import datetime
 import pandas as pd
 from dateutil import parser as dateparser
 from pymongo import MongoClient
+import re
 
 # Hardcoded tags to remove from recipes
 EXCLUDED_TAGS = {
@@ -44,14 +45,14 @@ def parse_ingredients(field):
         return []
     # If it's already a list
     if isinstance(field, list):
-        return [str(x).strip() for x in field if str(x).strip()]
+        return [re.sub(r"\s{2,}", " ", str(x).strip()) for x in field if str(x).strip()]
     s = str(field).strip()
     
     # Try JSON parse first
     try:
         parsed = json.loads(s)
         if isinstance(parsed, list):
-            return [str(x).strip().strip("'\"") for x in parsed if str(x).strip()]
+            return [re.sub(r"\s{2,}", " ", str(x).strip().strip("'\"")) for x in parsed if str(x).strip()]
     except Exception:
         pass
     
@@ -60,33 +61,33 @@ def parse_ingredients(field):
         import ast
         parsed = ast.literal_eval(s)
         if isinstance(parsed, list):
-            return [str(x).strip().strip("'\"") for x in parsed if str(x).strip()]
+            return [re.sub(r"\s{2,}", " ", str(x).strip().strip("'\"")) for x in parsed if str(x).strip()]
     except Exception:
         pass
     
     # Fallback separators
     for sep in ['|', ';', '\\n', '\\r\\n', ',']:
         if sep in s:
-            parts = [p.strip().strip("'\"") for p in s.split(sep) if p.strip()]
+            parts = [re.sub(r"\s{2,}", " ", p.strip().strip("'\"")) for p in s.split(sep) if p.strip()]
             if parts:
                 return parts
     
     # Single ingredient string
-    return [s.strip("'\"").strip()] if s else []
+    return [re.sub(r"\s{2,}", " ", s.strip("'\"").strip())] if s else []
 
 
 def parse_instructions(field):
     if pd.isna(field):
         return []
     if isinstance(field, list):
-        return [str(x).strip().strip("'\"") for x in field if str(x).strip()]
+        return [re.sub(r"\s{2,}", " ", str(x).strip().strip("'\"")) for x in field if str(x).strip()]
     s = str(field).strip()
     
     # Try JSON parse first
     try:
         parsed = json.loads(s)
         if isinstance(parsed, list):
-            return [str(x).strip().strip("'\"") for x in parsed if str(x).strip()]
+            return [re.sub(r"\s{2,}", " ", str(x).strip().strip("'\"")) for x in parsed if str(x).strip()]
     except Exception:
         pass
     
@@ -95,17 +96,17 @@ def parse_instructions(field):
         import ast
         parsed = ast.literal_eval(s)
         if isinstance(parsed, list):
-            return [str(x).strip().strip("'\"") for x in parsed if str(x).strip()]
+            return [re.sub(r"\s{2,}", " ", str(x).strip().strip("'\"")) for x in parsed if str(x).strip()]
     except Exception:
         pass
     
     # Split heuristically by lines or numbered steps
-    lines = [l.strip().strip("'\"") for l in s.splitlines() if l.strip()]
+    lines = [re.sub(r"\s{2,}", " ", l.strip().strip("'\"")) for l in s.splitlines() if l.strip()]
     if len(lines) > 1:
         return lines
     
     # Fallback split by '.' (naive)
-    parts = [p.strip().strip("'\"") for p in s.split('.') if p.strip()]
+    parts = [re.sub(r"\s{2,}", " ", p.strip().strip("'\"")) for p in s.split('.') if p.strip()]
     return parts
 
 
@@ -113,14 +114,14 @@ def parse_tags(field):
     if pd.isna(field):
         return []
     if isinstance(field, list):
-        return [str(x).lower().strip().strip("'\"") for x in field if str(x).strip()]
+        return [re.sub(r"\s{2,}", " ", str(x).lower().strip().strip("'\"")) for x in field if str(x).strip()]
     s = str(field).strip()
     
     # Try JSON parse first
     try:
         parsed = json.loads(s)
         if isinstance(parsed, list):
-            return [str(x).lower().strip().strip("'\"") for x in parsed if str(x).strip()]
+            return [re.sub(r"\s{2,}", " ", str(x).lower().strip().strip("'\"")) for x in parsed if str(x).strip()]
     except Exception:
         pass
     
@@ -129,19 +130,19 @@ def parse_tags(field):
         import ast
         parsed = ast.literal_eval(s)
         if isinstance(parsed, list):
-            return [str(x).lower().strip().strip("'\"") for x in parsed if str(x).strip()]
+            return [re.sub(r"\s{2,}", " ", str(x).lower().strip().strip("'\"")) for x in parsed if str(x).strip()]
     except Exception:
         pass
     
     # Split by separators
     for sep in ['|', ';', ',']:
         if sep in s:
-            parts = [p.strip().strip("'\"").lower() for p in s.split(sep) if p.strip()]
+            parts = [re.sub(r"\s{2,}", " ", p.strip().strip("'\"").lower()) for p in s.split(sep) if p.strip()]
             if parts:
                 return parts
     
     # Single tag
-    return [s.strip("'\"").lower()] if s else []
+    return [re.sub(r"\s{2,}", " ", s.strip("'\"").lower())] if s else []
 
 
 def map_row_to_recipe(row):
@@ -199,17 +200,22 @@ def map_row_to_recipe(row):
     # Remove excluded tags
     tags = [tag for tag in tags if tag.lower() not in EXCLUDED_TAGS]
 
+    def normalize(text):
+        if text is None:
+            return text
+        return re.sub(r"\s{2,}", " ", str(text).strip())
+
     recipe = {
-        'title': str(title).strip(),
-        'description': str(row.get('description') or '')[:1000],
+        'title': normalize(title),
+        'description': normalize(str(row.get('description') or '')[:1000]),
         'image_url': image_url,
         'prep_time_minutes': prep_time,
         'cook_time_minutes': cook_time,
         'servings': None,
-        'ingredients': ingredients,
-        'instructions': instructions,
+        'ingredients': [re.sub(r"\s{2,}", " ", i) for i in ingredients],
+        'instructions': [re.sub(r"\s{2,}", " ", ins) for ins in instructions],
         'nutrition': None,
-        'tags': tags,
+        'tags': [re.sub(r"\s{2,}", " ", t) for t in tags],
         'source': row.get('source') or 'kaggle-food-com',
         'rating': None,
         'review_count': None,

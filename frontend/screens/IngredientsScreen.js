@@ -87,28 +87,42 @@ const IngredientsScreen = () => {
   };
 
   const handleDeleteIngredient = (id, name) => {
-    console.log("Delete Button Clicked");
-    Alert.alert(
-      'Delete Ingredient',
-      `Are you sure you want to delete "${name}"?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await ApiService.deleteIngredient(id);
-              fetchIngredients();
-              Alert.alert('Success', 'Ingredient deleted');
-            } catch (error) {
-              Alert.alert('Error', 'Failed to delete ingredient');
-              console.error('Delete error:', error);
-            }
-          },
-        },
-      ]
-    );
+    console.log('Delete Button Clicked', id, name);
+
+    const doDelete = async () => {
+      try {
+        await ApiService.deleteIngredient(id);
+        fetchIngredients();
+        if (Platform.OS === 'web') {
+          // fallback to browser alert for web
+          window.alert('Ingredient deleted');
+        } else {
+          Alert.alert('Success', 'Ingredient deleted');
+        }
+      } catch (error) {
+        if (Platform.OS === 'web') {
+          window.alert('Failed to delete ingredient');
+        } else {
+          Alert.alert('Error', 'Failed to delete ingredient');
+        }
+        console.error('Delete error:', error);
+      }
+    };
+
+    // On web, `Alert.alert` may not behave as expected — use native confirm()
+    if (Platform.OS === 'web') {
+      const ok = window.confirm(`Are you sure you want to delete "${name}"?`);
+      if (ok) doDelete();
+    } else {
+      Alert.alert(
+        'Delete Ingredient',
+        `Are you sure you want to delete "${name}"?`,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Delete', style: 'destructive', onPress: doDelete },
+        ]
+      );
+    }
   };
 
   const getConfidenceBadge = (confidence) => {
@@ -139,7 +153,7 @@ const IngredientsScreen = () => {
       <View style={styles.ingredientInfo}>
         <View style={styles.ingredientHeader}>
           <Text style={styles.ingredientName}>{item.name}</Text>
-          {item.is_detected && (
+          {(item.is_detected || item.isDetected) && (
             <Text style={styles.detectedBadge}>📷 Detected</Text>
           )}
         </View>
@@ -150,16 +164,16 @@ const IngredientsScreen = () => {
         
         {getConfidenceBadge(item.confidence)}
         
-        {item.created_at && (
+        {(item.created_at || item.createdAt) && (
           <Text style={styles.ingredientDate}>
-            Added: {new Date(item.created_at).toLocaleDateString()}
+            Added: {new Date(item.created_at || item.createdAt).toLocaleDateString()}
           </Text>
         )}
       </View>
       
       <TouchableOpacity
         style={styles.deleteButton}
-        onPress={() => handleDeleteIngredient(item.id, item.name)}
+        onPress={() => handleDeleteIngredient(item.id || item._id, item.name)}
       >
         <Text style={styles.deleteButtonText}>🗑️</Text>
       </TouchableOpacity>
@@ -197,7 +211,7 @@ const IngredientsScreen = () => {
         <FlatList
           data={ingredients}
           renderItem={renderIngredient}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => (item.id || item._id || Math.random().toString())}
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
           refreshControl={

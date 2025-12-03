@@ -27,8 +27,13 @@ public class RecipeService {
     }
     
     public List<Recipe> searchRecipesByIngredients(List<String> ingredients) {
-        if (ingredients == null || ingredients.isEmpty()) {
+        // If the client omits the body (null), treat as request for all recipes.
+        // If the client sends an explicit empty list, return no results (avoid returning all accidentally).
+        if (ingredients == null) {
             return getAllRecipes();
+        }
+        if (ingredients.isEmpty()) {
+            return List.of();
         }
         
         // Fuzzy search: case-insensitive substring match against recipe ingredients
@@ -38,22 +43,40 @@ public class RecipeService {
                 .toList();
 
         if (queries.isEmpty()) {
-            return getAllRecipes();
+            // all queries were blank strings (e.g. ["", " "]) — return no results
+            return List.of();
         }
 
-        return getAllRecipes().stream()
-                .filter(recipe -> {
-                    if (recipe.getIngredients() == null || recipe.getIngredients().isEmpty()) return false;
-                    for (String ing : recipe.getIngredients()) {
-                        if (ing == null) continue;
-                        String ingLower = ing.toLowerCase();
-                        for (String q : queries) {
-                            if (ingLower.contains(q)) return true;
+        // Compute a match count for each recipe and sort by descending matches
+        List<Recipe> allRecipes = getAllRecipes();
+
+        // Precompute counts to avoid repeated work in comparator
+        java.util.Map<String, Integer> recipeMatchCounts = new java.util.HashMap<>();
+        for (Recipe recipe : allRecipes) {
+            int count = 0;
+            if (recipe.getIngredients() != null) {
+                for (String ing : recipe.getIngredients()) {
+                    if (ing == null) continue;
+                    String ingLower = ing.toLowerCase();
+                    for (String q : queries) {
+                        if (ingLower.contains(q)) {
+                            count++;
+                            break; // count this ingredient once even if multiple queries match
                         }
                     }
-                    return false;
-                })
-                .toList();
+                }
+            }
+            recipeMatchCounts.put(recipe.getId() != null ? recipe.getId() : recipe.getTitle(), count);
+        }
+
+        // Keep only recipes with at least one matching ingredient, then sort by match count descending
+        return allRecipes.stream()
+            .filter(r -> recipeMatchCounts.getOrDefault(r.getId() != null ? r.getId() : r.getTitle(), 0) > 0)
+            .sorted((r1, r2) -> Integer.compare(
+                recipeMatchCounts.getOrDefault(r2.getId() != null ? r2.getId() : r2.getTitle(), 0),
+                recipeMatchCounts.getOrDefault(r1.getId() != null ? r1.getId() : r1.getTitle(), 0)
+            ))
+            .toList();
     }
 
     public String generateRecipesFromAI(List<String> ingredients) {
